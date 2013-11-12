@@ -102,7 +102,7 @@ class SimpleLDAPObject:
             diagnostic_message_success = self._l.get_option(ldap.OPT_DIAGNOSTIC_MESSAGE)
       finally:
         self._ldap_object_lock.release()
-    except LDAPError,e:
+    except LDAPError as e:
       if __debug__ and self._trace_level>=2:
         self._trace_file.write('=> LDAPError - %s: %s\n' % (e.__class__.__name__,str(e)))
       raise
@@ -125,9 +125,9 @@ class SimpleLDAPObject:
     elif self.__dict__.has_key(name):
       return self.__dict__[name]
     else:
-      raise AttributeError,'%s has no attribute %s' % (
+      raise AttributeError('%s has no attribute %s' % (
         self.__class__.__name__,repr(name)
-      )
+      ))
 
   def abandon_ext(self,msgid,serverctrls=None,clientctrls=None):
     """
@@ -785,7 +785,7 @@ class ReconnectLDAPObject(SimpleLDAPObject):
           self.start_tls_s()
         # Repeat last simple or SASL bind
         self._apply_last_bind()
-      except (ldap.SERVER_DOWN,ldap.TIMEOUT),e:
+      except (ldap.SERVER_DOWN,ldap.TIMEOUT):
         if __debug__ and self._trace_level>=1:
           self._trace_file.write('*** %d. reconnect to %s failed\n' % (
             self._retry_max-reconnect_counter+1,uri
